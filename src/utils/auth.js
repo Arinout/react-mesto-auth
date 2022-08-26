@@ -47,7 +47,5 @@ export function getContent() {
       }
     })
       .then(response)
-  } else {
-    return Promise.reject(`Пользователь не авторизован `)
-  }
+    }
 }
