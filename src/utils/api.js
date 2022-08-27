@@ -71,17 +71,9 @@ export class Api {
       .then((res) => this._response(res));
   }
 
-  deleteLike(cardId) {
+  changeLikeCardStatus(cardId, likeCardStatus) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-        method: 'DELETE',
-        headers: this._headers
-      })
-      .then((res) => this._response(res));
-  }
-
-  setLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-        method: 'PUT',
+        method: (likeCardStatus ? "PUT": "DELETE"),
         headers: this._headers
       })
       .then((res) => this._response(res));

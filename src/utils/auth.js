@@ -47,5 +47,7 @@ export function getContent() {
       }
     })
       .then(response)
+    }else {
+      return Promise.reject(`Ошибка: пользователь не авторизован `)
     }
 }

@@ -28,8 +28,8 @@ function App() {
 
   const [isLogIn, setisLogIn] = React.useState(false);
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(false);
-  const [isAuthorization, setIsAuthorization] = React.useState(false);
-  const [isAuthorizationText, setIsAuthorizationText] = React.useState('');
+  const [isRegistration, setIsRegistration] = React.useState(false);
+  const [RegistrationText, setRegistrationText] = React.useState('');
   const [email, setEmail] = React.useState('')
 
   const history = useHistory();
@@ -82,30 +82,19 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-
-    if (!isLiked){
-      api.setLike(card._id)
+    api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
       })
       .catch((err) => {
         console.error(err);
       });
-    } else {
-      api.deleteLike(card._id)
-      .then((newCard) => {
-        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    }
   }
 
   function handleCardDelete (card) {
     api.deleteCard(card._id)
     .then(() => {
-      setCards((items) => items.filter((c) => c._id !== card._id && c));
+      setCards((items) => items.filter((c) => c._id !== card._id));
     })
     .catch((err) => {
       console.error(err);
@@ -139,16 +128,15 @@ function App() {
   function handleRegister (data) {
     auth.register(data)
     .then(() => {
-      setisLogIn(true);
       setEmail(data.email);
-      setIsAuthorization(true)
-      setIsAuthorizationText('Вы успешно зарегистрировались!')
+      setIsRegistration(true)
+      setRegistrationText('Вы успешно зарегистрировались!')
       setIsInfoTooltipPopupOpen(true)
-      history.push('/');
+      history.push("/sign-in");
     })
     .catch(() => {
-      setIsAuthorization(false)
-      setIsAuthorizationText('Что-то пошло не так! Попробуйте ещё раз.')
+      setIsRegistration(false)
+      setRegistrationText('Что-то пошло не так! Попробуйте ещё раз.')
       setIsInfoTooltipPopupOpen(true)
     })
   }
@@ -158,32 +146,30 @@ function App() {
       .then((res) => {
         if (res.token) {
           setisLogIn(true);
-          setIsAuthorization(true)
           setEmail(data.email);
           localStorage.setItem("jwt", res.token);
           history.push('/');
         }
       })
       .catch(() => {
-        setIsAuthorization(false)
       })
   }
 
-  React.useEffect(() => {
-    handleCheckToken()
-  }, [])
+  React.useEffect(() => { 
+    handleCheckToken() 
+  }, []) 
 
-  function handleCheckToken() {
-    auth.getContent()
-      .then((res) => {
-        setisLogIn(true);
-        setEmail(res.data.email);
-        history.push("/");
-      })
-      .catch(() => {
-        history.push("/sign-in");
-      });
-  }
+  function handleCheckToken() { 
+    auth.getContent() 
+      .then((res) => { 
+        setisLogIn(true); 
+        setEmail(res.data.email); 
+        history.push("/"); 
+      }) 
+      .catch(() => { 
+        history.push("/sign-in"); 
+      }); 
+  } 
 
   function handleSignOut() {
     localStorage.removeItem("jwt");
@@ -253,8 +239,8 @@ function App() {
         <InfoTooltip 
         onClose={closeAllPopups} 
         isOpen={isInfoTooltipPopupOpen} 
-        isAuthorizationText={isAuthorizationText} 
-        isAuthorization={isAuthorization}/>
+        RegistrationText={RegistrationText} 
+        isRegistration={isRegistration}/>
 
       </div>
     </CurrentUserContext.Provider>  
